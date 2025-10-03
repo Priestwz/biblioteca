@@ -15,50 +15,41 @@ CREATE TABLE IF NOT EXISTS livros (
 """)
 
 
-# def inserir_livros (Titulo,Autor,Ano):
-#     try:
-#         conexao = sqlite3.connect("Biblioteca.db")
-#         cursor = conexao.cursor()
-
-#         cursor.execute("""
-#         INSERT INTO livros (Titulo,Autor,Ano,Disponivel)
-#         VALUES (?,?,?,?)
-#         """,
-#         (Titulo,Autor,Ano,"sim")
-#         )
-#         conexao.commit()
-
-#     except Exception as erro:
-#         print(f"erro ao inserir o livro {erro}")
-
-#     finally:
-#         if conexao:
-#             conexao.close()
-
-# Titulo = input("Digitar o Titulo do livro: ").lower()
-# Autor = input("Digitar o Autor do livro: ").lower()
-# Ano = int(input("Digite o Ano do livro: "))
-
-# print("-*50")
-
-# inserir_livros(Titulo,Autor,Ano)
-
-# def listar_livros():
-#     try:
-#         conexao = sqlite3.connect("Biblioteca.db")
-#         cursor = conexao.cursor()
-#         cursor.execute("SELECT * FROM livros")
-#         for linha in cursor.fetchall():
-#             print(f"id:{[0]} | Titulo: {linha[1]} |Autor:{linha[2]} |Ano:{linha[3]} |Dispsonivel:{linha[4]}")
+def inserir_livros():
+    try:
+        conexao = sqlite3.connect("Biblioteca.db")
+        cursor = conexao.cursor()
+        Titulo = input("Digitar o Titulo do livro: ").lower()
+        Autor = input("Digitar o Autor do livro: ").lower()
+        Ano = int(input("Digite o Ano do livro: "))
+        cursor.execute("""
+        INSERT INTO livros (Titulo,Autor,Ano,Disponivel)
+        VALUES (?,?,?,?)
+        """,
+        (Titulo,Autor,Ano,"sim")
+        )
+        conexao.commit()
+    except Exception as erro:
+        print(f"erro ao inserir o livro {erro}")
+    finally:
+        if conexao:
+            conexao.close()
 
 
-#     except Expection as erro:
-#         print(f"erro ao inserir o livro {erro}")
-#     finally:
+def listar_livros():
+    try:
+        conexao = sqlite3.connect("Biblioteca.db")
+        cursor = conexao.cursor()
+        cursor.execute("SELECT * FROM livros")
+        for linha in cursor.fetchall():
+            print(f"id:{[0]} | Titulo: {linha[1]} |Autor:{linha[2]} |Ano:{linha[3]} |Dispsonivel:{linha[4]}")
 
-#         if conexao:
-#             conexao.close()
-# listar_livros()
+    except Expection as erro:
+        print(f"erro ao inserir o livro {erro}")
+    finally:
+
+        if conexao:
+            conexao.close()
 
 
 def atualizar_disponibilidade():
@@ -86,4 +77,45 @@ def atualizar_disponibilidade():
         if conexao:
             conexao.close()
 
-atualizar_disponibilidade()
+
+def deletar_livro():
+    try:
+        conexao = sqlite3.connect("biblioteca.db")
+        cursor = conexao.cursor()
+        deletar= int(input("Digite o id do livro que deseja deletar: "))
+        cursor.execute("DELETE FROM livros WHERE id = ?", (deletar,))
+
+        conexao.commit()
+
+        if cursor.rowcount > 0:
+            print("Livro foi removido com sucesso ")
+        else:
+            print("Nenhum livro encontrado")
+    except Exception as erro:
+        print(f"erro ao tentar excluir livro {erro} ")
+    finally:
+        if conexao:
+            conexao.close()
+
+def menu():
+    try:
+        while True:
+            print("\nMenu:")
+            print("1.Cadastra livro")
+            print("2.listar livro")
+            print("3.Atualizar disponiblidade")
+            print("4.Deletar livro")
+            print("5.Sair")
+            opcao = input("Escolha uma opção: ")
+            match opcao :
+                case "1": inserir_livros()
+                case "2": listar_livros()
+                case "3": atualizar_disponibilidade()
+                case "4": deletar_livro()
+
+    except sqlite3.Error as error:
+        print("Erro na operação do menu", error)
+    finally:
+        if conexao:
+            conexao.close()
+menu()
